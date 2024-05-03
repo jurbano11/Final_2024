@@ -119,3 +119,42 @@ Above is the effectiveness of the COVID-19 vaccine for women. If the strength is
 
 
 
+
+## LGBTQ
+```{r}
+dd2 <- LGBTQ %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+# the group_by followed by summarize(count=n())
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity",position="dodge")
+#Now for percentage plot
+basicCC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+This graph shows the number of LGBT people who got Covid after taking the vaccine and a placebo. This line chart shows that 85% of the people who got the vaccine got covid-19 and 15% of the people who got the placebo. The probability of contracting COVID-19 while receiving the vaccine is 0.18. People who identified as gay and received the vaccine were 0.18 times more likely to get covid-19 than those who received a placebo. There are two plots. In the first graph, the x-axis represents those infected, regardless of whether the participants were infected with covid-19 or not. The y-axis represents the number of people infected with COVID-19. In the second graph above, the two bars on the left of the graph are all the people who have been infected with covid-19. The X-axis shows whether the person is infected with covid-19 or not. However, the y-axis does not show the number of people infected with COVID-19, but now the percentage of people who got covid-19 after taking the placebo or the vaccine. The codes that generate this diagram begin with a block of code beginning with dd2. dd2 appears in the environment window and on inspection it contains 4 variables. These variables are infected, treatment, count and percentage (means percentage). The second code group is called baseC. BasicC can also be seen in the environment window and appears to contain a list of 9 variables. This information creates the first plot. BasicCC is the last set of code and is also in the file window
+### Numerical results
+```{r}
+table1 <- xtabs(~infected + treatment, data=LGBTQ)
+rowPerc(table1)
+colPerc(table1)
+```
+These numerical results show the specific percentage of LGBT people who got COVID-19 after taking the placebo and the vaccine. The percentage of LGBTQ participants who took the vaccine and contracted covid-19 was a shocking 85 percent! Only 15 percent of the participants who received only the placebo contracted covid-19. Vaccine ID is apparently completely ineffective in protecting the LGBTQ community from covid-19 and is not recommended. The probability of contracting COVID-19 while receiving the vaccine is 0.18. People who identified as LGBTQ and received the vaccine were 0.18 times more likely to get Covid-19 than people who received a placebo.
+### Inferential 
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+LGBTQfish <- fisher.test(table1)
+LGBTQfish
+```
+The p-value, standing at 7e-08, represents an exceedingly minute probability. Consequently, the inference drawn is that these outcomes are highly improbable to have arisen randomly. The Fishers's Exact Test reveals an odds ratio of 0.18, indicating that LGBTQ individuals vaccinated were approximately 0.18 times as likely to contract Covid-19 compared to those who received the placebo. Rejecting the null hypothesis in favor of the alternative, the drug demonstrates complete ineffectiveness in mitigating Covid-19 risks among individuals identifying as gay.
+```{r}
+effect <- LGBTQfish$p.value/(LGBTQfish$p.value +1)
+effectivenessLGBTQ = LGBTQfish$estimate/(LGBTQfish$estimate +1)*100
+print(effectivenessLGBTQ)
+```
+```{r}
+low=(LGBTQfish$conf.int[1]/(LGBTQfish$conf.int[1] +1))*100
+hi=(LGBTQfish$conf.int[2]/(LGBTQfish$conf.int[2] +1))*100
+options(digits=2)
+```
+## Effectiveness Confidence Interval `r low`  to `r hi`
+The efficacy of the Covid-19 vaccine among individuals identifying as LGBTQ is presented above. When effectiveness surpasses 50%, it signifies the vaccine's efficacy. However, based on the interval provided, it's evident that the vaccine does not offer protection against Covid-19 for LGBTQ individuals. The odds ratio serves as a gauge of the vaccine's effectiveness, which for the LGBTQ population is approximately 15, indicating complete ineffectiveness. Those who receive the vaccine aren't at an advantage compared to those who don't receive it. The confidence interval for effectiveness among LGBTQ individuals spans from 7.6 to 26.57.
