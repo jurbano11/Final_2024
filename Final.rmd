@@ -1,6 +1,6 @@
 ---
 title: "Covid91 vaccine study Final2023"
-author: "Put your name here!"
+author: "Jonathan Urbano"
 output: 
   html_document:
     number_sections: true
@@ -13,11 +13,16 @@ date: "`r Sys.Date()`"
 require(tidyverse)
 require(tigerstats)
 require(forcats)
-FinalDat <-read.csv(file="final.csv",header=TRUE)
+OldData <-read.csv(file="final.csv",header=TRUE)
 #recode to remove the annoying "X" from the dataframe
-FinalData <- FinalDat  %>% select(-one_of("X"))
+FinalData <- OldData %>% mutate(infected = recode(infected, covid19 = "covid", OK = "OK" )) %>% select(-one_of("X"))
 FinalData <- FinalData %>%
 mutate(across(where(is.character), as.factor))
+FinalData$treatment <- relevel(FinalData$treatment,ref="placebo")
+#FinalData$infected <- relevel(FinalData$infected,ref="OK")
+Males = filter(FinalData, sex =="M")
+Females = filter(FinalData, sex =="F")
+LGBTQ = filter(FinalData, LGBTQ =="gay")
 ```
 
 # Introduction
@@ -26,15 +31,91 @@ A new  preventative vaccine (covid921) is under test in clinical trials. Given t
 
 ## Males
 
+## Barplot 
+```{r}
+dd2 <- Males %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+# the group_by followed by summarize(count=n())
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity",position="dodge")
+#Now for percentage plot
+basicCC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+This barplot shows the number of men who got Covid after taking the vaccine and placebo. The boxplot above shows that 30% of people who received the vaccine got COVID-19, compared to 69% of people who received the placebo. A significantly higher percentage of those who received the placebo developed covid-19 compared to those who received the vaccine. The vaccine appears to be effective in protecting against Covid-19 disease. The odds of not getting covid-19 while on the vaccine are 2.25:1. Men who received the vaccine were 2.25 times less likely to get COVID-19 than those who received a placebo. In the chart, the two bars on the left side of the graph show all the people who have been infected with covid-19. The X-axis shows whether the person is infected with covid-19 or not. However, the y-axis does not show the number of people infected with COVID-19, but now the percentage of people who got covid-19 after taking the placebo or the vaccine. The codes that generate this diagram begin with a block of code beginning with dd2. dd2 appears in the environment window and when checked contains 4 variables. These variables include infected, treatment, number and percentage (represents a percentage). The second code group is called baseC. BasicC, the last set of code, can also be seen in the environment window and appears to contain a list of 9 variables. This information creates the first plot. 
+  
+### Numerical results
+```{r}
+table1 <- xtabs(~infected + treatment, data=Males)
+rowPerc(table1)
+colPerc(table1)
+```
+According to the numerical results, 69% of the men got sick after taking the placebo and only 30% of the men after the vaccine. A significantly higher percentage of patients who received the placebo contracted covid-19 than those who received the vaccine. The vaccine appears to offer better protection against Covid-19. There is a 2.25:1 chance that you will not get the coronavirus while you get the vaccine. Men who received the vaccine were 2.25 times less likely to develop COVID-19 than men who received a placebo..
+### Inferential 
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+Malesfish <- fisher.test(table1)
+Malesfish
+```
+Among all these results, the result of Fisher's exact test must be considered. The p-value above is very small at 1.098e-13. This is a very small number. seeing this number means that these results are unlikely to come by chance. The null hypothesis predicted that deaths related to covid-19 would be independent of gender. Since it is clear that gender plays a role in individual mortality, the alternative hypothesis that there is a correlation between COVID-19 deaths and gender is a favorable choice. The odd ratio above describes the ratio 2.242522. men (men) who received the vaccine were 2.24 times less likely to get COVID-19 than those who received the placebo.
+```{r}
+effect <- Malesfish$p.value/(Malesfish$p.value +1)
+effectivenessMales = Malesfish$estimate/(Malesfish$estimate +1)*100
+print(effectivenessMales)
+```
+```{r}
+low=(Malesfish$conf.int[1]/(Malesfish$conf.int[1] +1))*100
+hi=(Malesfish$conf.int[2]/(Malesfish$conf.int[2] +1))*100
+options(digits=2)
+```
+## Effectiveness Confidence Interval `r low`  to `r hi`
+Above is the effectiveness of the male (male) covid-19 vaccine. If the strength is above 50%, it means that the vaccine is effective. Based on the above period, we can conclude that the vaccine effectively protects men against covid-19 infection.
+The probability shows how effective the vaccine is. The odds ratio for men is 69%.
+
+
+
 
 ## Females
+```{r}
+dd2 <- Females %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+# the group_by followed by summarize(count=n())
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity",position="dodge")
+#Now for percentage plot
+basicCC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+This graph shows the number of women who got Covid after taking the vaccine and a placebo. The plot shows that more people who received only the placebo contracted covid-19. Only about 40 percent of people who received the vaccine were infected with covid-19. This means that about 60% of those infected with COVID-19 were those who received only the placebo. The probability of contracting COVID-19 while receiving the vaccine is 1.5. Women who received the vaccine were 1.5 times less likely to develop covid-19 than women who received a placebo. The two bars on the left of the graph show all the people who have been infected with covid-19. The X-axis shows whether the person is infected with covid-19 or not. However, the y-axis does not show the number of people infected with COVID-19, but now the percentage of people who got covid-19 after taking the placebo or the vaccine. The codes that generate this diagram begin with a block of code that begins with dd2. dd2 appears in the environment window and on inspection it contains 4 variables. These variables are infected, treatment, count and percentage (means percentage). The second code group is called baseC. BasicC can also be seen in the environment window and appears to contain a list of 9 variables. This information creates the first plot. BasicCC is the last set of code and is also in the file window..
+
+### Numerical results
+```{r}
+table1 <- xtabs(~infected + treatment, data=Females)
+rowPerc(table1)
+colPerc(table1)
+```
+According to the graph and numerical results, 60% of the women got sick after taking the placebo and only 40% of the women after the vaccine. A significantly higher percentage of patients who received the placebo contracted covid-19 than those who received the vaccine. The vaccine appears to offer better protection against Covid-19. Women have a 1.5 chance of getting COVID-19 while receiving the vaccine. Women who received the vaccine were 1.5 times less likely to develop covid-19 than women who received a placebo..
+### Inferential 
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+Femalesfish <- fisher.test(table1)
+Femalesfish
+```
+Among all these results, the result of Fisher's exact test must be considered. The p-value shown above is a very small 3e-04. This is a very small number. seeing this number means that these results are unlikely to occur by chance, so the null hypothesis can be rejected in favor of the alternative. Fisher's exact test shows that the probability is 1.5. Women who received the vaccine were about 1.5 times less likely to get COVID-19 than women who received only the placebo..
+```{r}
+effect <- Femalesfish$p.value/(Femalesfish$p.value +1)
+effectivenessFemales = Femalesfish$estimate/(Femalesfish$estimate +1)*100
+print(effectivenessFemales)
+```
+```{r}
+low=(Femalesfish$conf.int[1]/(Femalesfish$conf.int[1] +1))*100
+hi=(Femalesfish$conf.int[2]/(Femalesfish$conf.int[2] +1))*100
+options(digits=2)
+```
+## Effectiveness Confidence Interval `r low`  to `r hi`
+Above is the effectiveness of the COVID-19 vaccine for women. If the strength is above 50%, it means that the vaccine is effective. Based on the above period, we can conclude that the vaccine effectively protects Femaales against covid-19 infection. The probability is approximately the effectiveness of the vaccine. For women, the odds ratio is 60%.
 
 
-## LGBTQ
 
 
 
-## Druggies
-
-
-# Overall Results and Conclusions
