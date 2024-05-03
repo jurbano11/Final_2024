@@ -72,7 +72,7 @@ options(digits=2)
 Above is the effectiveness of the male (male) covid-19 vaccine. If the strength is above 50%, it means that the vaccine is effective. Based on the above period, we can conclude that the vaccine effectively protects men against covid-19 infection.
 The probability shows how effective the vaccine is. The odds ratio for men is 69%.
 
-
+(Accidentally comitted males in the females section)
 
 
 ## Females
