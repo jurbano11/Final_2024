@@ -158,3 +158,11 @@ options(digits=2)
 ```
 ## Effectiveness Confidence Interval `r low`  to `r hi`
 The efficacy of the Covid-19 vaccine among individuals identifying as LGBTQ is presented above. When effectiveness surpasses 50%, it signifies the vaccine's efficacy. However, based on the interval provided, it's evident that the vaccine does not offer protection against Covid-19 for LGBTQ individuals. The odds ratio serves as a gauge of the vaccine's effectiveness, which for the LGBTQ population is approximately 15, indicating complete ineffectiveness. Those who receive the vaccine aren't at an advantage compared to those who don't receive it. The confidence interval for effectiveness among LGBTQ individuals spans from 7.6 to 26.57.
+
+
+# Overall Results and Conclusions
+The Covid-19 vaccine showed ineffectiveness for both LGBTQ individuals and individuals with a history of drug use, as their effectiveness percentages fell below 50%. Conversely, the vaccine proved effective for both males and females, with effectiveness scores surpassing 50%. For males, the Covid-19 vaccine demonstrated efficacy in preventing the contraction of the virus, with an effectiveness rate of r effectivenessMales. Men benefited the most from this particular vaccine. Similarly, the Covid-19 vaccine exhibited high success rates in protecting women against the virus, with an effectiveness score of r effectivenessFemales. However, the vaccine was not effective for individuals who identified as LGBTQ. Those who received the vaccine were 0.18 times more likely to contract Covid-19 compared to those taking the placebo. The effectiveness rate for LGBTQ individuals was r effectivenessLGBTQ. Likewise, individuals with a history of drug use who received the vaccine were 0.13 times more likely to contract Covid-19 than those taking the placebo. The effectiveness rate for this group was r effectivenessDruggies. It is not recommended for individuals who identify as LGBTQ or have a history of drug use to receive the vaccine. Conversely, for males and females, the vaccine was reported to be effective. The null hypothesis, suggesting no difference in vaccine efficacy, can be accepted for categories including individuals with a history of drug use and LGBTQ individuals. However, the alternative hypothesis, indicating the vaccine's efficacy, can be accepted for males and females.
+
+
+
+
